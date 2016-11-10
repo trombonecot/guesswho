@@ -1,5 +1,4 @@
-
-
+/*jshint esversion: 6 */
 
 class ImagesApi {
 
@@ -16,10 +15,8 @@ class ImagesApi {
   }
 
   getImageMocked(name){
-    return 'https://ugc.kn3.net/i/origin/https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/02/02/08/donald-trump-3.jpg'  
+    return 'https://ugc.kn3.net/i/origin/https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/02/02/08/donald-trump-3.jpg';  
   }
-
-
 
 }
 
