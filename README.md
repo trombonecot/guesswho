@@ -26,5 +26,12 @@ tretes de les 100 paraules que més apareixen en les 10 primeres pagines que tro
   - servei que amagui les parts de la imatge
   - controlador que en funció del hints vagi descobrint parts de la imatge
   - controlador que en cas de guess correcte et digui que ho has aconseguit
-  
-   
+
+- modul separat que faci de crawler:
+
+  - BBDD de noms, hints i encerts
+
+
+
+
+npm install babel-core babel-loader jshint jshint-loader node-libs-browser babel-preset-es2015 babel-preset-react webpack  --save-dev
