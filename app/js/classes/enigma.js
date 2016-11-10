@@ -13,8 +13,8 @@ class Enigma{
         matrix[i] = [];
         for(let j=0; j<number; j++) {
             matrix[i][j] = false;
-        };
-    };
+        }
+    }
     this.map = matrix;
   }
 

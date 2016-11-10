@@ -1,9 +1,11 @@
 /*jshint esversion: 6 */
 
 import ImagesApi from './api/images-api.js';
+import MockedData from './api/mocked-data-api.js';
 import Enigma from './classes/enigma.js';
 
-require('./libs/d3.js')
+require('./libs/d3.js');
+require('../css/main.css');
 
 window.onload = function() { 
 
@@ -13,6 +15,7 @@ window.onload = function() {
 
   const imagesApi = new ImagesApi();
   const enigma = new Enigma(number,'', width, height);
+  
   const imageSrc = imagesApi.getImageMocked();
 
   const contenidor = document.getElementById("contenidor");
@@ -38,6 +41,13 @@ window.onload = function() {
   const small_width = width/number;
   const small_height = height/number;
 
+  const data = [
+      {
+          guess: ['donald trump'],
+          hints: ['politician','republican','american','corrupt','sexist']
+      }
+  ];
+
   
   while( i < number){
     while (j <number){
@@ -62,14 +72,51 @@ window.onload = function() {
   contenidor.setAttribute("src", imageSrc);
 
   hintButton.onclick = function(){
+    let text = hintInput.value;
+    console.log(text);
+    console.log(hintInput);
 
+    if (checkHint(text, 0)){
+      hintInput.className = "success";
 
+      const rand1 = Math.floor((Math.random() * number));
+      const rand2 = Math.floor((Math.random() * number));
 
-    console.log("hint!");
+      console.log(rand1);
+      console.log(rand2);
+
+      enigma.setTile(rand1,rand2, true);
+
+      let element = document.getElementById(rand1+"."+rand2);
+      console.log(element);
+      element.parentNode.removeChild(element);
+
+      
+    }else{
+      hintInput.className = "error";
+    }
   };
 
   guessButton.onclick = function(){
     console.log("guess!");
   };
+
+
+  let checkGuess = function(name, index){
+    return data[index].guess === name;
+  }
+
+  let checkHint = function(name, index){
+    let i = 0;
+    console.log(data);
+    const length = data[index].hints.length;
+    while(i<length){
+        if (data[index].hints[i] === name){
+            return true
+        }
+        i += 1;
+    }
+    return false
+  }
 
 };

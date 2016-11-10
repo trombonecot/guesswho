@@ -57,15 +57,19 @@
 
 	var _imagesApi2 = _interopRequireDefault(_imagesApi);
 
-	var _enigma = __webpack_require__(3);
+	var _mockedDataApi = __webpack_require__(3);
+
+	var _mockedDataApi2 = _interopRequireDefault(_mockedDataApi);
+
+	var _enigma = __webpack_require__(4);
 
 	var _enigma2 = _interopRequireDefault(_enigma);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*jshint esversion: 6 */
+	__webpack_require__(5); /*jshint esversion: 6 */
 
-	__webpack_require__(4);
+	__webpack_require__(6);
 
 	window.onload = function () {
 
@@ -75,11 +79,14 @@
 
 	  var imagesApi = new _imagesApi2.default();
 	  var enigma = new _enigma2.default(number, '', width, height);
+
 	  var imageSrc = imagesApi.getImageMocked();
 
 	  var contenidor = document.getElementById("contenidor");
 	  var hintButton = document.getElementById("hint-button");
 	  var guessButton = document.getElementById("guess-button");
+	  var hintInput = document.getElementById("hint");
+	  var guessInput = document.getElementById("guess");
 
 	  var layer = d3.select("#contenidor").append("svg").attr("width", width).attr("height", height);
 
@@ -91,6 +98,11 @@
 	  var j = 0;
 	  var small_width = width / number;
 	  var small_height = height / number;
+
+	  var data = [{
+	    guess: ['donald trump'],
+	    hints: ['politician', 'republican', 'american', 'corrupt', 'sexist']
+	  }];
 
 	  while (i < number) {
 	    while (j < number) {
@@ -108,11 +120,48 @@
 	  contenidor.setAttribute("src", imageSrc);
 
 	  hintButton.onclick = function () {
-	    console.log("hint!");
+	    var text = hintInput.value;
+	    console.log(text);
+	    console.log(hintInput);
+
+	    if (checkHint(text, 0)) {
+	      hintInput.className = "success";
+
+	      var rand1 = Math.floor(Math.random() * number);
+	      var rand2 = Math.floor(Math.random() * number);
+
+	      console.log(rand1);
+	      console.log(rand2);
+
+	      enigma.setTile(rand1, rand2, true);
+
+	      var element = document.getElementById(rand1 + "." + rand2);
+	      console.log(element);
+	      element.parentNode.removeChild(element);
+	    } else {
+	      hintInput.className = "error";
+	    }
 	  };
 
 	  guessButton.onclick = function () {
 	    console.log("guess!");
+	  };
+
+	  var checkGuess = function checkGuess(name, index) {
+	    return data[index].guess === name;
+	  };
+
+	  var checkHint = function checkHint(name, index) {
+	    var i = 0;
+	    console.log(data);
+	    var length = data[index].hints.length;
+	    while (i < length) {
+	      if (data[index].hints[i] === name) {
+	        return true;
+	      }
+	      i += 1;
+	    }
+	    return false;
 	  };
 	};
 
@@ -164,6 +213,56 @@
 /* 3 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/*jshint esversion: 6 */
+
+	var MockedDataApi = function () {
+	  function MockedDataApi(hola) {
+	    _classCallCheck(this, MockedDataApi);
+
+	    this.data = [{
+	      guess: ['donald trump'],
+	      hints: ['politician', 'republican', 'american', 'corrupt', 'sexist']
+	    }];
+	  }
+
+	  _createClass(MockedDataApi, [{
+	    key: 'checkGuess',
+	    value: function checkGuess(name, index) {
+	      return this.data[index].guess === name;
+	    }
+	  }, {
+	    key: 'checkHint',
+	    value: function checkHint(name, index) {
+	      var i = 0;
+	      var length = this.data[index].hints.length;
+	      while (i < length) {
+	        if (this.data[index].hints[i] === name) {
+	          return true;
+	        }
+	      }
+	      return false;
+	    }
+	  }]);
+
+	  return MockedDataApi;
+	}();
+
+	exports.default = MockedDataApi;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -190,8 +289,8 @@
 	      matrix[i] = [];
 	      for (var j = 0; j < number; j++) {
 	        matrix[i][j] = false;
-	      };
-	    };
+	      }
+	    }
 	    this.map = matrix;
 	  }
 
@@ -213,7 +312,7 @@
 	exports.default = Enigma;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};// https://d3js.org Version 4.2.6. Copyright 2016 Mike Bostock.
@@ -769,6 +868,354 @@
 	var albersUsa=function albersUsa(){var cache,cacheStream,lower48=albers(),lower48Point,alaska=conicEqualArea().rotate([154,0]).center([-2,58.5]).parallels([55,65]),alaskaPoint,// EPSG:3338
 	hawaii=conicEqualArea().rotate([157,0]).center([-3,19.9]).parallels([8,18]),hawaiiPoint,// ESRI:102007
 	_point2,pointStream={point:function point(x,y){_point2=[x,y];}};function albersUsa(coordinates){var x=coordinates[0],y=coordinates[1];return _point2=null,(lower48Point.point(x,y),_point2)||(alaskaPoint.point(x,y),_point2)||(hawaiiPoint.point(x,y),_point2);}albersUsa.invert=function(coordinates){var k=lower48.scale(),t=lower48.translate(),x=(coordinates[0]-t[0])/k,y=(coordinates[1]-t[1])/k;return(y>=0.120&&y<0.234&&x>=-0.425&&x<-0.214?alaska:y>=0.166&&y<0.234&&x>=-0.214&&x<-0.115?hawaii:lower48).invert(coordinates);};albersUsa.stream=function(stream){return cache&&cacheStream===stream?cache:cache=multiplex([lower48.stream(cacheStream=stream),alaska.stream(stream),hawaii.stream(stream)]);};albersUsa.precision=function(_){if(!arguments.length)return lower48.precision();lower48.precision(_),alaska.precision(_),hawaii.precision(_);return reset();};albersUsa.scale=function(_){if(!arguments.length)return lower48.scale();lower48.scale(_),alaska.scale(_*0.35),hawaii.scale(_);return albersUsa.translate(lower48.translate());};albersUsa.translate=function(_){if(!arguments.length)return lower48.translate();var k=lower48.scale(),x=+_[0],y=+_[1];lower48Point=lower48.translate(_).clipExtent([[x-0.455*k,y-0.238*k],[x+0.455*k,y+0.238*k]]).stream(pointStream);alaskaPoint=alaska.translate([x-0.307*k,y+0.201*k]).clipExtent([[x-0.425*k+epsilon$4,y+0.120*k+epsilon$4],[x-0.214*k-epsilon$4,y+0.234*k-epsilon$4]]).stream(pointStream);hawaiiPoint=hawaii.translate([x-0.205*k,y+0.212*k]).clipExtent([[x-0.214*k+epsilon$4,y+0.166*k+epsilon$4],[x-0.115*k-epsilon$4,y+0.234*k-epsilon$4]]).stream(pointStream);return reset();};albersUsa.fitExtent=fitExtent(albersUsa);albersUsa.fitSize=fitSize(albersUsa);function reset(){cache=cacheStream=null;return albersUsa;}return albersUsa.scale(1070);};function azimuthalRaw(scale){return function(x,y){var cx=cos$1(x),cy=cos$1(y),k=scale(cx*cy);return[k*cy*sin$1(x),k*sin$1(y)];};}function azimuthalInvert(angle){return function(x,y){var z=sqrt$1(x*x+y*y),c=angle(z),sc=sin$1(c),cc=cos$1(c);return[atan2(x*sc,z*cc),asin$1(z&&y*sc/z)];};}var azimuthalEqualAreaRaw=azimuthalRaw(function(cxcy){return sqrt$1(2/(1+cxcy));});azimuthalEqualAreaRaw.invert=azimuthalInvert(function(z){return 2*asin$1(z/2);});var azimuthalEqualArea=function azimuthalEqualArea(){return projection(azimuthalEqualAreaRaw).scale(124.75).clipAngle(180-1e-3);};var azimuthalEquidistantRaw=azimuthalRaw(function(c){return(c=acos(c))&&c/sin$1(c);});azimuthalEquidistantRaw.invert=azimuthalInvert(function(z){return z;});var azimuthalEquidistant=function azimuthalEquidistant(){return projection(azimuthalEquidistantRaw).scale(79.4188).clipAngle(180-1e-3);};function mercatorRaw(lambda,phi){return[lambda,log$1(tan((halfPi$3+phi)/2))];}mercatorRaw.invert=function(x,y){return[x,2*atan(exp(y))-halfPi$3];};var mercator=function mercator(){return mercatorProjection(mercatorRaw).scale(961/tau$4);};function mercatorProjection(project){var m=projection(project),scale=m.scale,translate=m.translate,clipExtent=m.clipExtent,clipAuto;m.scale=function(_){return arguments.length?(scale(_),clipAuto&&m.clipExtent(null),m):scale();};m.translate=function(_){return arguments.length?(translate(_),clipAuto&&m.clipExtent(null),m):translate();};m.clipExtent=function(_){if(!arguments.length)return clipAuto?null:clipExtent();if(clipAuto=_==null){var k=pi$4*scale(),t=translate();_=[[t[0]-k,t[1]-k],[t[0]+k,t[1]+k]];}clipExtent(_);return m;};return m.clipExtent(null);}function tany(y){return tan((halfPi$3+y)/2);}function conicConformalRaw(y0,y1){var cy0=cos$1(y0),n=y0===y1?sin$1(y0):log$1(cy0/cos$1(y1))/log$1(tany(y1)/tany(y0)),f=cy0*pow$1(tany(y0),n)/n;if(!n)return mercatorRaw;function project(x,y){if(f>0){if(y<-halfPi$3+epsilon$4)y=-halfPi$3+epsilon$4;}else{if(y>halfPi$3-epsilon$4)y=halfPi$3-epsilon$4;}var r=f/pow$1(tany(y),n);return[r*sin$1(n*x),f-r*cos$1(n*x)];}project.invert=function(x,y){var fy=f-y,r=sign$1(n)*sqrt$1(x*x+fy*fy);return[atan2(x,fy)/n,2*atan(pow$1(f/r,1/n))-halfPi$3];};return project;}var conicConformal=function conicConformal(){return conicProjection(conicConformalRaw).scale(109.5).parallels([30,30]);};function equirectangularRaw(lambda,phi){return[lambda,phi];}equirectangularRaw.invert=equirectangularRaw;var equirectangular=function equirectangular(){return projection(equirectangularRaw).scale(152.63);};function conicEquidistantRaw(y0,y1){var cy0=cos$1(y0),n=y0===y1?sin$1(y0):(cy0-cos$1(y1))/(y1-y0),g=cy0/n+y0;if(abs(n)<epsilon$4)return equirectangularRaw;function project(x,y){var gy=g-y,nx=n*x;return[gy*sin$1(nx),g-gy*cos$1(nx)];}project.invert=function(x,y){var gy=g-y;return[atan2(x,gy)/n,g-sign$1(n)*sqrt$1(x*x+gy*gy)];};return project;}var conicEquidistant=function conicEquidistant(){return conicProjection(conicEquidistantRaw).scale(131.154).center([0,13.9389]);};function gnomonicRaw(x,y){var cy=cos$1(y),k=cos$1(x)*cy;return[cy*sin$1(x)/k,sin$1(y)/k];}gnomonicRaw.invert=azimuthalInvert(atan);var gnomonic=function gnomonic(){return projection(gnomonicRaw).scale(144.049).clipAngle(60);};function orthographicRaw(x,y){return[cos$1(y)*sin$1(x),sin$1(y)];}orthographicRaw.invert=azimuthalInvert(asin$1);var orthographic=function orthographic(){return projection(orthographicRaw).scale(249.5).clipAngle(90+epsilon$4);};function stereographicRaw(x,y){var cy=cos$1(y),k=1+cos$1(x)*cy;return[cy*sin$1(x)/k,sin$1(y)/k];}stereographicRaw.invert=azimuthalInvert(function(z){return 2*atan(z);});var stereographic=function stereographic(){return projection(stereographicRaw).scale(250).clipAngle(142);};function transverseMercatorRaw(lambda,phi){return[log$1(tan((halfPi$3+phi)/2)),-lambda];}transverseMercatorRaw.invert=function(x,y){return[-y,2*atan(exp(x))-halfPi$3];};var transverseMercator=function transverseMercator(){var m=mercatorProjection(transverseMercatorRaw),center=m.center,rotate=m.rotate;m.center=function(_){return arguments.length?center([-_[1],_[0]]):(_=center(),[_[1],-_[0]]);};m.rotate=function(_){return arguments.length?rotate([_[0],_[1],_.length>2?_[2]+90:90]):(_=rotate(),[_[0],_[1],_[2]-90]);};return rotate([0,0,90]).scale(159.155);};exports.version=version;exports.bisect=bisectRight;exports.bisectRight=bisectRight;exports.bisectLeft=bisectLeft;exports.ascending=ascending;exports.bisector=bisector;exports.descending=descending;exports.deviation=deviation;exports.extent=extent;exports.histogram=histogram;exports.thresholdFreedmanDiaconis=freedmanDiaconis;exports.thresholdScott=scott;exports.thresholdSturges=sturges;exports.max=max;exports.mean=mean;exports.median=median;exports.merge=merge;exports.min=min;exports.pairs=pairs;exports.permute=permute;exports.quantile=threshold;exports.range=range;exports.scan=scan;exports.shuffle=shuffle;exports.sum=sum;exports.ticks=ticks;exports.tickStep=tickStep;exports.transpose=transpose;exports.variance=variance;exports.zip=zip;exports.entries=entries;exports.keys=keys;exports.values=values;exports.map=map$1;exports.set=set;exports.nest=nest;exports.randomUniform=uniform;exports.randomNormal=normal;exports.randomLogNormal=logNormal;exports.randomBates=bates;exports.randomIrwinHall=irwinHall;exports.randomExponential=exponential;exports.easeLinear=linear;exports.easeQuad=quadInOut;exports.easeQuadIn=quadIn;exports.easeQuadOut=quadOut;exports.easeQuadInOut=quadInOut;exports.easeCubic=cubicInOut;exports.easeCubicIn=cubicIn;exports.easeCubicOut=cubicOut;exports.easeCubicInOut=cubicInOut;exports.easePoly=polyInOut;exports.easePolyIn=polyIn;exports.easePolyOut=polyOut;exports.easePolyInOut=polyInOut;exports.easeSin=sinInOut;exports.easeSinIn=sinIn;exports.easeSinOut=sinOut;exports.easeSinInOut=sinInOut;exports.easeExp=expInOut;exports.easeExpIn=expIn;exports.easeExpOut=expOut;exports.easeExpInOut=expInOut;exports.easeCircle=circleInOut;exports.easeCircleIn=circleIn;exports.easeCircleOut=circleOut;exports.easeCircleInOut=circleInOut;exports.easeBounce=bounceOut;exports.easeBounceIn=bounceIn;exports.easeBounceOut=bounceOut;exports.easeBounceInOut=bounceInOut;exports.easeBack=backInOut;exports.easeBackIn=backIn;exports.easeBackOut=backOut;exports.easeBackInOut=backInOut;exports.easeElastic=elasticOut;exports.easeElasticIn=elasticIn;exports.easeElasticOut=elasticOut;exports.easeElasticInOut=elasticInOut;exports.polygonArea=area;exports.polygonCentroid=centroid;exports.polygonHull=hull;exports.polygonContains=contains;exports.polygonLength=length$1;exports.path=path;exports.quadtree=quadtree;exports.queue=queue;exports.arc=arc;exports.area=area$1;exports.line=line;exports.pie=pie;exports.radialArea=radialArea;exports.radialLine=radialLine$1;exports.symbol=symbol;exports.symbols=symbols;exports.symbolCircle=circle;exports.symbolCross=cross$1;exports.symbolDiamond=diamond;exports.symbolSquare=square;exports.symbolStar=star;exports.symbolTriangle=triangle;exports.symbolWye=wye;exports.curveBasisClosed=basisClosed;exports.curveBasisOpen=basisOpen;exports.curveBasis=basis;exports.curveBundle=bundle;exports.curveCardinalClosed=cardinalClosed;exports.curveCardinalOpen=cardinalOpen;exports.curveCardinal=cardinal;exports.curveCatmullRomClosed=catmullRomClosed;exports.curveCatmullRomOpen=catmullRomOpen;exports.curveCatmullRom=catmullRom;exports.curveLinearClosed=linearClosed;exports.curveLinear=curveLinear;exports.curveMonotoneX=monotoneX;exports.curveMonotoneY=monotoneY;exports.curveNatural=natural;exports.curveStep=step;exports.curveStepAfter=stepAfter;exports.curveStepBefore=stepBefore;exports.stack=stack;exports.stackOffsetExpand=expand;exports.stackOffsetNone=none;exports.stackOffsetSilhouette=silhouette;exports.stackOffsetWiggle=wiggle;exports.stackOrderAscending=ascending$1;exports.stackOrderDescending=descending$2;exports.stackOrderInsideOut=insideOut;exports.stackOrderNone=none$1;exports.stackOrderReverse=reverse;exports.color=color;exports.rgb=rgb;exports.hsl=hsl;exports.lab=lab;exports.hcl=hcl;exports.cubehelix=cubehelix;exports.interpolate=interpolate;exports.interpolateArray=array$1;exports.interpolateDate=date;exports.interpolateNumber=interpolateNumber;exports.interpolateObject=object;exports.interpolateRound=interpolateRound;exports.interpolateString=interpolateString;exports.interpolateTransformCss=interpolateTransformCss;exports.interpolateTransformSvg=interpolateTransformSvg;exports.interpolateZoom=interpolateZoom;exports.interpolateRgb=interpolateRgb;exports.interpolateRgbBasis=rgbBasis;exports.interpolateRgbBasisClosed=rgbBasisClosed;exports.interpolateHsl=hsl$2;exports.interpolateHslLong=hslLong;exports.interpolateLab=lab$1;exports.interpolateHcl=hcl$2;exports.interpolateHclLong=hclLong;exports.interpolateCubehelix=cubehelix$2;exports.interpolateCubehelixLong=cubehelixLong;exports.interpolateBasis=basis$2;exports.interpolateBasisClosed=basisClosed$1;exports.quantize=quantize;exports.dispatch=dispatch;exports.dsvFormat=dsv;exports.csvParse=csvParse;exports.csvParseRows=csvParseRows;exports.csvFormat=csvFormat;exports.csvFormatRows=csvFormatRows;exports.tsvParse=tsvParse;exports.tsvParseRows=tsvParseRows;exports.tsvFormat=tsvFormat;exports.tsvFormatRows=tsvFormatRows;exports.request=request;exports.html=html;exports.json=json;exports.text=text;exports.xml=xml;exports.csv=csv$1;exports.tsv=tsv$1;exports.now=now;exports.timer=timer;exports.timerFlush=timerFlush;exports.timeout=timeout$1;exports.interval=interval$1;exports.timeInterval=newInterval;exports.timeMillisecond=millisecond;exports.timeMilliseconds=milliseconds;exports.timeSecond=second;exports.timeSeconds=seconds;exports.timeMinute=minute;exports.timeMinutes=minutes;exports.timeHour=hour;exports.timeHours=hours;exports.timeDay=day;exports.timeDays=days;exports.timeWeek=sunday;exports.timeWeeks=sundays;exports.timeSunday=sunday;exports.timeSundays=sundays;exports.timeMonday=monday;exports.timeMondays=mondays;exports.timeTuesday=tuesday;exports.timeTuesdays=tuesdays;exports.timeWednesday=wednesday;exports.timeWednesdays=wednesdays;exports.timeThursday=thursday;exports.timeThursdays=thursdays;exports.timeFriday=friday;exports.timeFridays=fridays;exports.timeSaturday=saturday;exports.timeSaturdays=saturdays;exports.timeMonth=month;exports.timeMonths=months;exports.timeYear=year;exports.timeYears=years;exports.utcMillisecond=millisecond;exports.utcMilliseconds=milliseconds;exports.utcSecond=second;exports.utcSeconds=seconds;exports.utcMinute=utcMinute;exports.utcMinutes=utcMinutes;exports.utcHour=utcHour;exports.utcHours=utcHours;exports.utcDay=utcDay;exports.utcDays=utcDays;exports.utcWeek=utcSunday;exports.utcWeeks=utcSundays;exports.utcSunday=utcSunday;exports.utcSundays=utcSundays;exports.utcMonday=utcMonday;exports.utcMondays=utcMondays;exports.utcTuesday=utcTuesday;exports.utcTuesdays=utcTuesdays;exports.utcWednesday=utcWednesday;exports.utcWednesdays=utcWednesdays;exports.utcThursday=utcThursday;exports.utcThursdays=utcThursdays;exports.utcFriday=utcFriday;exports.utcFridays=utcFridays;exports.utcSaturday=utcSaturday;exports.utcSaturdays=utcSaturdays;exports.utcMonth=utcMonth;exports.utcMonths=utcMonths;exports.utcYear=utcYear;exports.utcYears=utcYears;exports.formatLocale=formatLocale;exports.formatDefaultLocale=defaultLocale;exports.formatSpecifier=formatSpecifier;exports.precisionFixed=precisionFixed;exports.precisionPrefix=precisionPrefix;exports.precisionRound=precisionRound;exports.isoFormat=formatIso;exports.isoParse=parseIso;exports.timeFormatLocale=formatLocale$1;exports.timeFormatDefaultLocale=defaultLocale$1;exports.scaleBand=band;exports.scalePoint=point$4;exports.scaleIdentity=identity$4;exports.scaleLinear=linear$2;exports.scaleLog=log;exports.scaleOrdinal=ordinal;exports.scaleImplicit=implicit;exports.scalePow=pow;exports.scaleSqrt=sqrt;exports.scaleQuantile=quantile$$1;exports.scaleQuantize=quantize$1;exports.scaleThreshold=threshold$1;exports.scaleTime=time;exports.scaleUtc=utcTime;exports.schemeCategory10=category10;exports.schemeCategory20b=category20b;exports.schemeCategory20c=category20c;exports.schemeCategory20=category20;exports.scaleSequential=sequential;exports.interpolateCubehelixDefault=cubehelix$3;exports.interpolateRainbow=rainbow$1;exports.interpolateWarm=warm;exports.interpolateCool=cool;exports.interpolateViridis=viridis;exports.interpolateMagma=magma;exports.interpolateInferno=inferno;exports.interpolatePlasma=plasma;exports.creator=creator;exports.customEvent=customEvent;exports.local=local;exports.matcher=matcher$1;exports.mouse=mouse;exports.namespace=namespace;exports.namespaces=namespaces;exports.select=select;exports.selectAll=selectAll;exports.selection=selection;exports.selector=selector;exports.selectorAll=selectorAll;exports.touch=touch;exports.touches=touches;exports.window=window;exports.active=active;exports.interrupt=interrupt;exports.transition=transition;exports.axisTop=axisTop;exports.axisRight=axisRight;exports.axisBottom=axisBottom;exports.axisLeft=axisLeft;exports.cluster=cluster;exports.hierarchy=hierarchy;exports.pack=index;exports.packSiblings=siblings;exports.packEnclose=enclose;exports.partition=partition;exports.stratify=stratify;exports.tree=tree;exports.treemap=index$1;exports.treemapBinary=binary;exports.treemapDice=treemapDice;exports.treemapSlice=treemapSlice;exports.treemapSliceDice=sliceDice;exports.treemapSquarify=squarify;exports.treemapResquarify=resquarify;exports.forceCenter=center$1;exports.forceCollide=collide;exports.forceLink=link;exports.forceManyBody=manyBody;exports.forceSimulation=simulation;exports.forceX=x$3;exports.forceY=y$3;exports.drag=drag;exports.dragDisable=dragDisable;exports.dragEnable=yesdrag;exports.voronoi=voronoi;exports.zoom=zoom;exports.zoomIdentity=identity$6;exports.zoomTransform=transform;exports.brush=brush;exports.brushX=brushX;exports.brushY=brushY;exports.brushSelection=brushSelection;exports.chord=chord;exports.ribbon=ribbon;exports.geoAlbers=albers;exports.geoAlbersUsa=albersUsa;exports.geoArea=area$2;exports.geoAzimuthalEqualArea=azimuthalEqualArea;exports.geoAzimuthalEqualAreaRaw=azimuthalEqualAreaRaw;exports.geoAzimuthalEquidistant=azimuthalEquidistant;exports.geoAzimuthalEquidistantRaw=azimuthalEquidistantRaw;exports.geoBounds=bounds;exports.geoCentroid=centroid$1;exports.geoCircle=circle$1;exports.geoClipExtent=extent$1;exports.geoConicConformal=conicConformal;exports.geoConicConformalRaw=conicConformalRaw;exports.geoConicEqualArea=conicEqualArea;exports.geoConicEqualAreaRaw=conicEqualAreaRaw;exports.geoConicEquidistant=conicEquidistant;exports.geoConicEquidistantRaw=conicEquidistantRaw;exports.geoDistance=distance;exports.geoEquirectangular=equirectangular;exports.geoEquirectangularRaw=equirectangularRaw;exports.geoGnomonic=gnomonic;exports.geoGnomonicRaw=gnomonicRaw;exports.geoGraticule=graticule;exports.geoInterpolate=interpolate$2;exports.geoLength=length$2;exports.geoMercator=mercator;exports.geoMercatorRaw=mercatorRaw;exports.geoOrthographic=orthographic;exports.geoOrthographicRaw=orthographicRaw;exports.geoPath=index$3;exports.geoProjection=projection;exports.geoProjectionMutator=projectionMutator;exports.geoRotation=rotation;exports.geoStereographic=stereographic;exports.geoStereographicRaw=stereographicRaw;exports.geoStream=geoStream;exports.geoTransform=transform$1;exports.geoTransverseMercator=transverseMercator;exports.geoTransverseMercatorRaw=transverseMercatorRaw;Object.defineProperty(exports,'__esModule',{value:true});});
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(7);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(9)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./main.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./main.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(8)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.error{\n    background:lightcoral;\n}\n.success{\n    background:lightgreen;\n}", ""]);
+
+	// exports
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
 
 /***/ }
 /******/ ]);
