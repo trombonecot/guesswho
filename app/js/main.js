@@ -15,7 +15,11 @@ window.onload = function() {
   const enigma = new Enigma(number,'', width, height);
   const imageSrc = imagesApi.getImageMocked();
 
-  let contenidor = document.getElementById("contenidor");
+  const contenidor = document.getElementById("contenidor");
+  const hintButton = document.getElementById("hint-button");
+  const guessButton = document.getElementById("guess-button");
+  const hintInput = document.getElementById("hint");
+  const guessInput = document.getElementById("guess");
 
   const layer = d3.select("#contenidor").append("svg")
                         .attr("width", width)
@@ -29,8 +33,6 @@ window.onload = function() {
   
   enigma.setTile(4,2, true);
 
-  console.log(!enigma.getTile(2,1));
-
   let i = 0;
   let j= 0;
   const small_width = width/number;
@@ -43,6 +45,7 @@ window.onload = function() {
       if (!enigma.getTile(i,j)){
         layer.append("rect").attr("x", i*small_width)
                           .attr("y", j*small_height)
+                          .attr("id", i+'.'+j)
                           .attr("width", small_width)
                           .attr("height", small_height)
                           .attr("stroke-width",0)
@@ -57,5 +60,16 @@ window.onload = function() {
   }
 
   contenidor.setAttribute("src", imageSrc);
+
+  hintButton.onclick = function(){
+
+
+
+    console.log("hint!");
+  };
+
+  guessButton.onclick = function(){
+    console.log("guess!");
+  };
 
 };

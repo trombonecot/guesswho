@@ -78,14 +78,14 @@
 	  var imageSrc = imagesApi.getImageMocked();
 
 	  var contenidor = document.getElementById("contenidor");
+	  var hintButton = document.getElementById("hint-button");
+	  var guessButton = document.getElementById("guess-button");
 
 	  var layer = d3.select("#contenidor").append("svg").attr("width", width).attr("height", height);
 
 	  layer.append("svg:image").attr("xlink:href", imageSrc).attr("width", width).attr("height", height);
 
 	  enigma.setTile(4, 2, true);
-
-	  console.log(!enigma.getTile(2, 1));
 
 	  var i = 0;
 	  var j = 0;
@@ -96,7 +96,7 @@
 	    while (j < number) {
 
 	      if (!enigma.getTile(i, j)) {
-	        layer.append("rect").attr("x", i * small_width).attr("y", j * small_height).attr("width", small_width).attr("height", small_height).attr("stroke-width", 0).attr("fill", "black");
+	        layer.append("rect").attr("x", i * small_width).attr("y", j * small_height).attr("id", i + '.' + j).attr("width", small_width).attr("height", small_height).attr("stroke-width", 0).attr("fill", "black");
 	      }
 
 	      j += 1;
@@ -106,6 +106,14 @@
 	  }
 
 	  contenidor.setAttribute("src", imageSrc);
+
+	  hintButton.onclick = function () {
+	    console.log("hint!");
+	  };
+
+	  guessButton.onclick = function () {
+	    console.log("guess!");
+	  };
 	};
 
 /***/ },
